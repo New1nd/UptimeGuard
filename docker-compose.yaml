@@ -83,18 +83,18 @@ services:
       - .docker/redis/data:/data
     ports:
       - 6379:6379
-#  reverb:
-#    build:
-#      context: dockerfiles
-#      dockerfile: reverb.Dockerfile
-#    container_name: reverb
-#    ports:
-#      - '8080:8080'
-#    volumes:
-#      - './src:/var/www/project'
-#    working_dir: /var/www/project
-#    depends_on:
-#      - php
-#      - nginx
+  reverb:
+    build:
+      context: dockerfiles
+      dockerfile: reverb.Dockerfile
+    container_name: reverb
+    ports:
+      - '8080:8080'
+    volumes:
+      - './src:/var/www/project'
+    working_dir: /var/www/project
+    depends_on:
+      - php
+      - nginx
 volumes:
   db_data: null

@@ -1,5 +1,16 @@
 # LaraDock
 
+## Components:
+
+- PHP 
+- NGINX 
+- POSTGRESQL 
+- REDIS 
+- REVERB
+- NPM
+- COMPOSER
+- ARTISAN
+
 Run ```docker-composer up -d```
 
 Down ```docker-compose down -v```
