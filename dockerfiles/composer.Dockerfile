@@ -1,6 +1,6 @@
 FROM composer:latest
 
 ARG PROJECT_NAME
-WORKDIR /var/www/laradock
+WORKDIR /var/www/${PROJECT_NAME}
 
 ENTRYPOINT ["composer", "--ignore-platform-reqs"]

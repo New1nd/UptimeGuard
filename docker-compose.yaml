@@ -6,7 +6,6 @@ services:
     volumes:
       - './nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro'
       - './src:/var/www/laradock'
-    #      - './certbot/www/:/var/www/project/:ro'
     depends_on:
       - db
       - php
@@ -23,7 +22,7 @@ services:
       args:
         PROJECT_NAME: ${PROJECT_NAME}
     volumes:
-      - './src:/var/www/laradock'
+      - './src:/var/www/${PROJECT_NAME}'
   db:
     container_name: postgres_laravel
     image: 'postgres:12'
@@ -61,13 +60,13 @@ services:
       args:
         PROJECT_NAME: ${PROJECT_NAME}
     volumes:
-      - './src:/var/www/laradock'
+      - './src:/var/www/${PROJECT_NAME}'
   artisan:
     build:
       context: dockerfiles
       dockerfile: php.Dockerfile
     volumes:
-      - './src:/var/www/laradock'
+      - './src:/var/www/${PROJECT_NAME}'
     entrypoint:
       - php
       - /var/www/${PROJECT_NAME}/artisan
@@ -76,7 +75,7 @@ services:
     working_dir: /var/www/${PROJECT_NAME}
     entrypoint: ["npm"]
     volumes:
-      - './src:/var/www/laradock'
+      - './src:/var/www/${PROJECT_NAME}'
   redis:
     image: redis:latest
     command: redis-server --appendonly yes
