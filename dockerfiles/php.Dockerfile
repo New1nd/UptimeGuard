@@ -1,6 +1,7 @@
 FROM php:8.3-fpm
 
-WORKDIR /var/www/project
+ARG PROJECT_NAME
+WORKDIR /var/www/${PROJECT_NAME}
 
 #RUN apt update \
 #    && apt install postgresql-dev \
