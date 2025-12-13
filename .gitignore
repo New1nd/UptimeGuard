@@ -19,3 +19,10 @@ src/*
 /src
 /src/
 /src/*
+
+.docker
+.docker/
+.docker/*
+/.docker
+/.docker/
+/.docker/*

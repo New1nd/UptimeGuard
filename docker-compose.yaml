@@ -80,7 +80,7 @@ services:
     image: redis:latest
     command: redis-server --appendonly yes
     volumes:
-      - .docker/redis/data:/data
+      - './containers_data/redis:/data'
     ports:
       - 6379:6379
 #  reverb:
