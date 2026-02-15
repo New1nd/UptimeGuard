@@ -5,7 +5,7 @@ services:
       - '81:80'
     volumes:
       - './nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro'
-      - './src:/var/www/laradock'
+      - './src:/var/www/${PROJECT_NAME}'
     depends_on:
       - db
       - php
@@ -83,6 +83,21 @@ services:
       - './containers_data/redis:/data'
     ports:
       - 6379:6379
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # ⚠️ Смените в продакшене!
+      - GF_SERVER_HTTP_PORT=3000
+    restart: unless-stopped
+    networks:
+      - monitoring
 #  reverb:
 #    build:
 #      context: dockerfiles
@@ -98,3 +113,8 @@ services:
 #      - nginx
 volumes:
   db_data: null
+  grafana_data:
+
+networks:
+  monitoring:
+    driver: bridge
