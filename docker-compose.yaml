@@ -24,7 +24,6 @@ services:
     volumes:
       - './src:/var/www/${PROJECT_NAME}'
   db:
-    container_name: postgres_laravel
     image: 'postgres:12'
     ports:
       - '5432:5432'
