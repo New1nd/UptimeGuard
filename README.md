@@ -2,16 +2,28 @@
 
 ## Components:
 
-- PHP 
-- NGINX 
-- POSTGRESQL 
-- REDIS 
+- PHP
+- NGINX
+- POSTGRESQL
+- REDIS
 - REVERB
 - NPM
 - COMPOSER
 - ARTISAN
 
-Run ```docker-composer up -d```
+## Setup
+
+### 1. Configure hosts file
+
+Add to `/etc/hosts` (Linux/Mac) or `C:\Windows\System32\drivers\etc\hosts` (Windows):
+```
+127.0.0.1 bb56land.local
+```
+Replace `bb56land` with your `PROJECT_NAME` from `.env`.
+
+### 2. Start containers
+
+Run ```docker-compose up -d```
 
 Down ```docker-compose down -v```
 

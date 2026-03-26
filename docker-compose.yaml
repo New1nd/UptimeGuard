@@ -7,10 +7,15 @@ services:
       - './nginx/nginx.conf:/etc/nginx/templates/default.conf.template:ro'
       - './src:/var/www/${PROJECT_NAME}'
     depends_on:
-      - db
-      - php
+      php:
+        condition: service_started
+      db:
+        condition: service_healthy
     environment:
       - PROJECT_NAME=${PROJECT_NAME}
+    networks:
+      - default
+      - monitoring
   php:
     build:
       context: dockerfiles
@@ -19,12 +24,32 @@ services:
         PROJECT_NAME: ${PROJECT_NAME}
     volumes:
       - './src:/var/www/${PROJECT_NAME}'
+    networks:
+      - default
+      - monitoring
+    healthcheck:
+      test: ["CMD-SHELL", "php-fpm-healthcheck || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
   db:
     image: 'postgres:12'
-    env_file:
-      - env/postgres.env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - './containers_data/db_data:/var/lib/postgresql/data'
+    networks:
+      - default
+      - monitoring
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
   pgadmin:
     image: dpage/pgadmin4:9.13.0
     ports:
@@ -71,13 +96,51 @@ services:
     entrypoint: ["npm"]
     volumes:
       - './src:/var/www/${PROJECT_NAME}'
-  redis:
-    image: redis:7.4.8
-    command: redis-server --appendonly yes
+  telegram-bot:
+    build:
+      context: dockerfiles
+      dockerfile: php.Dockerfile
+      args:
+        PROJECT_NAME: ${PROJECT_NAME}
     volumes:
-      - './containers_data/redis:/data'
-    ports:
-      - 6379:6379
+      - './src:/var/www/${PROJECT_NAME}'
+    command: php artisan telegram:polling
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+  scheduler:
+    build:
+      context: dockerfiles
+      dockerfile: php.Dockerfile
+      args:
+        PROJECT_NAME: ${PROJECT_NAME}
+    volumes:
+      - './src:/var/www/${PROJECT_NAME}'
+    command: sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+#  redis:
+#    image: redis:7.4.8
+#    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_secret}
+#    volumes:
+#      - './containers_data/redis:/data'
+#    ports:
+#      - 6379:6379
+#    networks:
+#      - default
+#      - monitoring
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-redis_secret}", "ping"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 3
   grafana:
     image: grafana/grafana:12.3.5
     container_name: grafana
@@ -107,7 +170,6 @@ services:
 #      - php
 #      - nginx
 volumes:
-  db_data: null
   grafana_data:
 
 networks:
