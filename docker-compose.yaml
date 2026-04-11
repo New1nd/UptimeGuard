@@ -75,3 +75,6 @@ services:
       - './src:/var/www/${PROJECT_NAME}'
     command: sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
     restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
