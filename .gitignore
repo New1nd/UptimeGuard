@@ -13,12 +13,12 @@ containers_data*
 /containers_data/
 /containers_data/*
 
-src
-src/
-src/*
-/src
-/src/
-/src/*
+#src
+#src/
+#src/*
+#/src
+#/src/
+#/src/*
 
 .docker
 .docker/
