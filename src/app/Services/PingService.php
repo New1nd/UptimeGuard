@@ -64,7 +64,7 @@ class PingService
             return "📋 Список сайтов пуст. Добавьте сайт командой /add";
         }
 
-        $lines = ["📊 *Результаты проверки:*\n"];
+        $lines = ["📊 Результаты проверки:\n"];
 
         foreach ($results as $result) {
             $lines[] = $this->formatResult($result);

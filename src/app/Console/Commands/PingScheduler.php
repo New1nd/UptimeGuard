@@ -29,8 +29,8 @@ class PingScheduler extends Command
             $results = $pingService->pingAllSites($setting->user_id);
 
             if (!empty($results)) {
-                $message = "🔔 *Автоматическая проверка*\n\n" . $pingService->formatResults($results);
-                $bot->sendMessage($message, chat_id: $setting->user_id, parse_mode: ParseMode::MARKDOWN);
+                $message = "🔔 Автоматическая проверка\n\n" . $pingService->formatResults($results);
+                $bot->sendMessage($message, chat_id: $setting->user_id);
             }
 
             $setting->update(['last_ping_at' => now()]);

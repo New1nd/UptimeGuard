@@ -28,17 +28,17 @@ class BotHandlers
 
     public function start(Nutgram $bot): void
     {
-        $message = "👋 *Site Monitor Bot*\n\n"
+        $message = "👋 Site Monitor Bot\n\n"
             . "Команды:\n"
-            . "/add <url> [name] - Добавить сайт\n"
+            . "/add url [name] - Добавить сайт\n"
             . "/list - Список сайтов\n"
-            . "/remove <id> - Удалить сайт\n"
+            . "/remove id - Удалить сайт\n"
             . "/ping - Проверить все сайты\n"
-            . "/ping <id> - Проверить конкретный сайт\n"
-            . "/interval <минуты> - Интервал автопроверки\n"
+            . "/ping id - Проверить конкретный сайт\n"
+            . "/interval минуты - Интервал автопроверки\n"
             . "/status - Текущие настройки";
 
-        $bot->sendMessage($message, parse_mode: ParseMode::MARKDOWN);
+        $bot->sendMessage($message);
     }
 
     public function add(Nutgram $bot, string $url, ?string $name = null): void
@@ -81,13 +81,13 @@ class BotHandlers
             return;
         }
 
-        $lines = ["📋 *Ваши сайты:*\n"];
+        $lines = ["📋 Ваши сайты:\n"];
         foreach ($sites as $site) {
             $name = $site->name ?: $site->url;
             $lines[] = "• [{$site->id}] {$name}\n  {$site->url}";
         }
 
-        $bot->sendMessage(implode("\n", $lines), parse_mode: ParseMode::MARKDOWN);
+        $bot->sendMessage(implode("\n", $lines));
     }
 
     public function remove(Nutgram $bot, string $id): void
@@ -123,7 +123,7 @@ class BotHandlers
         } else {
             $bot->sendMessage("⏳ Проверяю все сайты...");
             $results = $this->pingService->pingAllSites($userId);
-            $bot->sendMessage($this->pingService->formatResults($results), parse_mode: ParseMode::MARKDOWN);
+            $bot->sendMessage($this->pingService->formatResults($results));
 
             // Update last ping time
             TelegramSetting::where('user_id', $userId)->update(['last_ping_at' => now()]);
@@ -159,12 +159,12 @@ class BotHandlers
         $lastPing = $settings?->last_ping_at?->format('d.m.Y H:i') ?? 'никогда';
         $statusEmoji = $isActive ? '🟢' : '🔴';
 
-        $message = "⚙️ *Настройки*\n\n"
+        $message = "⚙️ Настройки\n\n"
             . "📋 Сайтов: {$sitesCount}\n"
             . "⏰ Интервал: {$interval} мин.\n"
             . "{$statusEmoji} Автопроверка: " . ($isActive ? 'вкл' : 'выкл') . "\n"
             . "🕐 Последняя проверка: {$lastPing}";
 
-        $bot->sendMessage($message, parse_mode: ParseMode::MARKDOWN);
+        $bot->sendMessage($message);
     }
 }
