@@ -62,6 +62,9 @@ services:
       - './src:/var/www/${PROJECT_NAME}'
     command: php artisan telegram:polling
     restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
   scheduler:
     build:
       context: dockerfiles
