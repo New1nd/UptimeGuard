@@ -18,12 +18,16 @@ class BotHandlers
     {
         $bot->onCommand('start', [$this, 'start']);
         $bot->onCommand('help', [$this, 'start']);
-        $bot->onCommand('add {url} {name?}', [$this, 'add']);
+        $bot->onCommand('add {url}', [$this, 'add']);
         $bot->onCommand('list', [$this, 'list']);
         $bot->onCommand('remove {id}', [$this, 'remove']);
         $bot->onCommand('ping {id?}', [$this, 'ping']);
         $bot->onCommand('interval {minutes}', [$this, 'interval']);
         $bot->onCommand('status', [$this, 'status']);
+
+        $bot->onException(function (Nutgram $bot, \Throwable $e) {
+            logger()->error('Telegram bot error: ' . $e->getMessage(), ['exception' => $e]);
+        });
     }
 
     public function start(Nutgram $bot): void
@@ -41,7 +45,7 @@ class BotHandlers
         $bot->sendMessage($message);
     }
 
-    public function add(Nutgram $bot, string $url, ?string $name = null): void
+    public function add(Nutgram $bot, string $url): void
     {
         $userId = $bot->userId();
 
@@ -57,7 +61,7 @@ class BotHandlers
 
         $site = Site::create([
             'url' => $url,
-            'name' => $name,
+            'name' => null,
             'user_id' => $userId,
         ]);
 
@@ -67,8 +71,7 @@ class BotHandlers
             ['ping_interval' => 60, 'is_active' => true]
         );
 
-        $displayName = $name ?: $url;
-        $bot->sendMessage("✅ Сайт добавлен: {$displayName}\nID: {$site->id}");
+        $bot->sendMessage("✅ Сайт добавлен: {$url}\nID: {$site->id}");
     }
 
     public function list(Nutgram $bot): void
