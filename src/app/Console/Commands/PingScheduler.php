@@ -46,7 +46,7 @@ class PingScheduler extends Command
             return true;
         }
 
-        $minutesSinceLastPing = now()->diffInMinutes($setting->last_ping_at);
-        return $minutesSinceLastPing >= $setting->ping_interval;
+        $secondsSinceLastPing = now()->diffInSeconds($setting->last_ping_at);
+        return $secondsSinceLastPing >= ($setting->ping_interval * 60);
     }
 }
