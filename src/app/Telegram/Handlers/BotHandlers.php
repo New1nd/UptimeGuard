@@ -21,7 +21,7 @@ class BotHandlers
         $bot->onCommand('add {url}', [$this, 'add']);
         $bot->onCommand('list', [$this, 'list']);
         $bot->onCommand('remove {id}', [$this, 'remove']);
-        $bot->onCommand('ping', [$this, 'ping']);
+        $bot->onCommand('ping(?: {id})?', [$this, 'ping']);
         $bot->onCommand('interval {minutes}', [$this, 'interval']);
         $bot->onCommand('status', [$this, 'status']);
 
@@ -109,12 +109,9 @@ class BotHandlers
         $bot->sendMessage("🗑 Удалён: {$name}");
     }
 
-    public function ping(Nutgram $bot): void
+    public function ping(Nutgram $bot, ?string $id = null): void
     {
         $userId = $bot->userId();
-        $text = trim($bot->message()->text ?? '');
-        $parts = explode(' ', $text);
-        $id = $parts[1] ?? null;
 
         if ($id) {
             $site = Site::where('id', $id)->where('user_id', $userId)->first();
