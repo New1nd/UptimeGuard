@@ -4,8 +4,8 @@ ARG PROJECT_NAME
 WORKDIR /var/www/${PROJECT_NAME}
 
 RUN apt-get update \
-  && apt-get install -y postgresql build-essential zlib1g-dev default-mysql-client curl gnupg procps vim git unzip libzip-dev libpq-dev libfcgi-bin \
-  && docker-php-ext-install zip pdo_mysql pdo_pgsql pgsql pdo \
+  && apt-get install -y build-essential zlib1g-dev curl gnupg procps vim git unzip libzip-dev libsqlite3-dev libfcgi-bin \
+  && docker-php-ext-install zip pdo pdo_sqlite \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 

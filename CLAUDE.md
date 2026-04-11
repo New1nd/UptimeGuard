@@ -34,14 +34,13 @@ docker exec -it <container_name> sh   # Shell into container
 ### Services (docker-compose.yaml)
 - **nginx** - Web server on port 81, proxies PHP to php-fpm
 - **php** - PHP 8.3-fpm with PostgreSQL/MySQL PDO extensions
-- **db** - PostgreSQL 12 database
 - **composer** - Runs composer commands (profile: tools)
 - **artisan** - Runs artisan commands (profile: tools)
 - **npm** - Node 20 for frontend builds (profile: tools)
 
 ### Configuration
 - `.env` - Docker environment variables (PROJECT_NAME controls paths)
-- `env/postgres.env` - Database credentials
+- Database: SQLite (`src/database/database.sqlite`)
 - `nginx/nginx.conf` - Nginx server configuration
 - `dockerfiles/` - Custom PHP and Composer Dockerfiles
 

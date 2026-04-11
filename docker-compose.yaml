@@ -9,8 +9,6 @@ services:
     depends_on:
       php:
         condition: service_started
-      db:
-        condition: service_healthy
     environment:
       - PROJECT_NAME=${PROJECT_NAME}
   php:
@@ -27,20 +25,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 30s
-  db:
-    image: 'postgres:12'
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    volumes:
-      - './containers_data/db_data:/var/lib/postgresql/data'
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
   composer:
     profiles: ["tools"]
     build:
@@ -77,9 +61,6 @@ services:
     volumes:
       - './src:/var/www/${PROJECT_NAME}'
     command: php artisan telegram:polling
-    depends_on:
-      db:
-        condition: service_healthy
     restart: unless-stopped
   scheduler:
     build:
@@ -90,7 +71,4 @@ services:
     volumes:
       - './src:/var/www/${PROJECT_NAME}'
     command: sh -c "while true; do php artisan schedule:run --verbose --no-interaction; sleep 60; done"
-    depends_on:
-      db:
-        condition: service_healthy
     restart: unless-stopped
