@@ -35,9 +35,6 @@ docker exec -it <container_name> sh   # Shell into container
 - **nginx** - Web server on port 81, proxies PHP to php-fpm
 - **php** - PHP 8.3-fpm with PostgreSQL/MySQL PDO extensions
 - **db** - PostgreSQL 12 database
-- **pgadmin** - Database admin UI on port 5050 (admin@admin.com / password)
-- **redis** - Redis 7.4 on port 6379 (password in REDIS_PASSWORD env var)
-- **grafana** - Monitoring dashboard on port 3000 (admin / admin)
 - **composer** - Runs composer commands (profile: tools)
 - **artisan** - Runs artisan commands (profile: tools)
 - **npm** - Node 20 for frontend builds (profile: tools)
