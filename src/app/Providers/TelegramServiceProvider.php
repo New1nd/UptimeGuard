@@ -22,6 +22,10 @@ class TelegramServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if ($this->app->runningInConsole() && !config('telegram.bot_token')) {
+            return;
+        }
+
         $bot = $this->app->make(Nutgram::class);
         $handlers = $this->app->make(BotHandlers::class);
         $handlers->register($bot);
