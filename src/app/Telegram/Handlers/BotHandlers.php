@@ -47,7 +47,7 @@ class BotHandlers
 
     public function add(Nutgram $bot, string $url): void
     {
-        $userId = $bot->userId();
+        $chatId = $bot->chatId();
 
         // Validate URL
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
@@ -62,12 +62,12 @@ class BotHandlers
         $site = Site::create([
             'url' => $url,
             'name' => null,
-            'user_id' => $userId,
+            'chat_id' => $chatId,
         ]);
 
         // Ensure settings exist
         TelegramSetting::firstOrCreate(
-            ['user_id' => $userId],
+            ['chat_id' => $chatId],
             ['ping_interval' => 60, 'is_active' => true]
         );
 
@@ -76,8 +76,8 @@ class BotHandlers
 
     public function list(Nutgram $bot): void
     {
-        $userId = $bot->userId();
-        $sites = Site::where('user_id', $userId)->get();
+        $chatId = $bot->chatId();
+        $sites = Site::where('chat_id', $chatId)->get();
 
         if ($sites->isEmpty()) {
             $bot->sendMessage("📋 Список пуст. Добавьте сайт: /add <url>");
@@ -95,8 +95,8 @@ class BotHandlers
 
     public function remove(Nutgram $bot, string $id): void
     {
-        $userId = $bot->userId();
-        $site = Site::where('id', $id)->where('user_id', $userId)->first();
+        $chatId = $bot->chatId();
+        $site = Site::where('id', $id)->where('chat_id', $chatId)->first();
 
         if (!$site) {
             $bot->sendMessage("❌ Сайт не найден");
@@ -111,10 +111,10 @@ class BotHandlers
 
     public function ping(Nutgram $bot, ?string $id = null): void
     {
-        $userId = $bot->userId();
+        $chatId = $bot->chatId();
 
         if ($id) {
-            $site = Site::where('id', $id)->where('user_id', $userId)->first();
+            $site = Site::where('id', $id)->where('chat_id', $chatId)->first();
             if (!$site) {
                 $bot->sendMessage("❌ Сайт не найден");
                 return;
@@ -125,17 +125,17 @@ class BotHandlers
             $bot->sendMessage($this->pingService->formatResult($result));
         } else {
             $bot->sendMessage("⏳ Проверяю все сайты...");
-            $results = $this->pingService->pingAllSites($userId);
+            $results = $this->pingService->pingAllSites($chatId);
             $bot->sendMessage($this->pingService->formatResults($results));
 
             // Update last ping time
-            TelegramSetting::where('user_id', $userId)->update(['last_ping_at' => now()]);
+            TelegramSetting::where('chat_id', $chatId)->update(['last_ping_at' => now()]);
         }
     }
 
     public function interval(Nutgram $bot, string $minutes): void
     {
-        $userId = $bot->userId();
+        $chatId = $bot->chatId();
         $minutes = (int) $minutes;
 
         if ($minutes < 1 || $minutes > 1440) {
@@ -144,7 +144,7 @@ class BotHandlers
         }
 
         TelegramSetting::updateOrCreate(
-            ['user_id' => $userId],
+            ['chat_id' => $chatId],
             ['ping_interval' => $minutes]
         );
 
@@ -153,9 +153,9 @@ class BotHandlers
 
     public function status(Nutgram $bot): void
     {
-        $userId = $bot->userId();
-        $settings = TelegramSetting::where('user_id', $userId)->first();
-        $sitesCount = Site::where('user_id', $userId)->count();
+        $chatId = $bot->chatId();
+        $settings = TelegramSetting::where('chat_id', $chatId)->first();
+        $sitesCount = Site::where('chat_id', $chatId)->count();
 
         $interval = $settings?->ping_interval ?? 60;
         $isActive = $settings?->is_active ?? true;

@@ -11,7 +11,7 @@ use SergiX44\Nutgram\Telegram\Properties\ParseMode;
 class PingScheduler extends Command
 {
     protected $signature = 'ping:scheduled';
-    protected $description = 'Run scheduled ping for all users';
+    protected $description = 'Run scheduled ping for all chats';
 
     public function handle(Nutgram $bot, PingService $pingService): int
     {
@@ -24,13 +24,13 @@ class PingScheduler extends Command
                 continue;
             }
 
-            $this->info("Pinging sites for user {$setting->user_id}");
+            $this->info("Pinging sites for chat {$setting->chat_id}");
 
-            $results = $pingService->pingAllSites($setting->user_id);
+            $results = $pingService->pingAllSites($setting->chat_id);
 
             if (!empty($results)) {
                 $message = "🔔 Автоматическая проверка\n\n" . $pingService->formatResults($results);
-                $bot->sendMessage($message, chat_id: $setting->user_id);
+                $bot->sendMessage($message, chat_id: $setting->chat_id);
             }
 
             $setting->update(['last_ping_at' => now()]);

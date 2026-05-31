@@ -33,9 +33,9 @@ class PingService
         }
     }
 
-    public function pingAllSites(int $userId): array
+    public function pingAllSites(int $chatId): array
     {
-        $sites = Site::where('user_id', $userId)->get();
+        $sites = Site::where('chat_id', $chatId)->get();
         $results = [];
 
         foreach ($sites as $site) {
@@ -64,7 +64,10 @@ class PingService
             return "📋 Список сайтов пуст. Добавьте сайт командой /add";
         }
 
-        $lines = ["📊 Результаты проверки:\n"];
+        $hasDown = (bool) array_filter($results, fn($r) => !$r['success']);
+
+        $lines = ["📊 Результаты проверки:"];
+        $lines[] = $hasDown ? "⚠️ Один из сайтов недоступен\n" : "";
 
         foreach ($results as $result) {
             $lines[] = $this->formatResult($result);

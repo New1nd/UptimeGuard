@@ -12,10 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('url');
             $table->string('name')->nullable();
-            $table->bigInteger('user_id'); // Telegram user ID
+            $table->bigInteger('chat_id'); // Telegram chat ID (user, group or supergroup)
             $table->timestamps();
 
-            $table->index('user_id');
+            $table->index('chat_id');
         });
     }
 

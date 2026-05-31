@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('telegram_settings', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unique(); // Telegram user ID
+            $table->bigInteger('chat_id')->unique(); // Telegram chat ID (user, group or supergroup)
             $table->integer('ping_interval')->default(60); // minutes
             $table->boolean('is_active')->default(true);
             $table->timestamp('last_ping_at')->nullable();

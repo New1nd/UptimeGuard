@@ -9,10 +9,10 @@ class Site extends Model
     protected $fillable = [
         'url',
         'name',
-        'user_id',
+        'chat_id',
     ];
 
     protected $casts = [
-        'user_id' => 'integer',
+        'chat_id' => 'integer',
     ];
 }

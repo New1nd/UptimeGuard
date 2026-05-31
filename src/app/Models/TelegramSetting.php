@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class TelegramSetting extends Model
 {
     protected $fillable = [
-        'user_id',
+        'chat_id',
         'ping_interval',
         'is_active',
         'last_ping_at',
     ];
 
     protected $casts = [
-        'user_id' => 'integer',
+        'chat_id' => 'integer',
         'ping_interval' => 'integer',
         'is_active' => 'boolean',
         'last_ping_at' => 'datetime',
@@ -22,6 +22,6 @@ class TelegramSetting extends Model
 
     public function sites()
     {
-        return Site::where('user_id', $this->user_id)->get();
+        return Site::where('chat_id', $this->chat_id)->get();
     }
 }
